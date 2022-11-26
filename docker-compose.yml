@@ -20,6 +20,9 @@ services:
       - .:/app
     ports:
       - "18000:8080"
+    depends_on:
+      todo-db:
+        condition: service_healthy
   todo-db:
     image: mysql:latest
     # image: mysql:8.0.29
@@ -35,6 +38,8 @@ services:
       - $PWD/_tools/mysql/conf.d:/etc/mysql/conf.d:cached
     ports:
       - "33306:3306"
+    healthcheck:
+      test: mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD
   todo-redis:
     image: "redis:latest"
     container_name: todo-redis
